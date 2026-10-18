@@ -32,11 +32,19 @@ export default function LoginPage() {
     setError("");
   }
 
-  function callbackUrl(next = "/") {
-    const url = new URL("/auth/callback", window.location.origin);
-    url.searchParams.set("next", next);
-    return url.toString();
-  }
+ function callbackUrl(next = "/") {
+  const configuredUrl = process.env.NEXT_PUBLIC_SITE_URL;
+
+  const baseUrl =
+    process.env.NODE_ENV === "production" && configuredUrl
+      ? configuredUrl
+      : window.location.origin;
+
+  const url = new URL("/auth/callback", baseUrl);
+  url.searchParams.set("next", next);
+
+  return url.toString();
+}
 
   function changeMode(nextMode: AuthMode) {
     clearMessages();
